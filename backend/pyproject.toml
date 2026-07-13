@@ -1,0 +1,26 @@
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = '\\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+src_paths = ["app", "tests"]
+known_first_party = ["app"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
