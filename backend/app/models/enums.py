@@ -4,7 +4,15 @@ from __future__ import annotations
 
 from enum import Enum
 
-__all__ = ["EventSeverity"]
+__all__ = ["CorrelationStatus", "EventSeverity"]
+
+
+class CorrelationStatus(str, Enum):
+    """Lifecycle status for correlated event groups."""
+
+    OPEN = "open"
+    ACTIVE = "active"
+    CLOSED = "closed"
 
 
 class EventSeverity(str, Enum):
