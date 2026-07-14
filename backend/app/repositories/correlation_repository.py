@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from datetime import datetime
 from typing import Final
 from uuid import UUID
 
 from app.models.correlation import Correlation, CorrelationMember
+from app.models.enums import CorrelationStatus
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -57,6 +59,25 @@ class CorrelationRepository:
         self._session.flush()
         self._session.refresh(member)
         return member
+
+    def list_active_since(
+        self,
+        since: datetime,
+    ) -> Sequence[Correlation]:
+        """Return non-closed correlations active since the given timestamp."""
+
+        statement: Select[tuple[Correlation]] = (
+            select(Correlation)
+            .where(
+                Correlation.status != CorrelationStatus.CLOSED,
+                Correlation.last_activity_at >= since,
+            )
+            .order_by(
+                Correlation.last_activity_at.desc(),
+                Correlation.id.desc(),
+            )
+        )
+        return self._session.scalars(statement).all()
 
     def list(self, limit: int, offset: int) -> Sequence[Correlation]:
         """Return a paginated list of correlations by latest activity."""
